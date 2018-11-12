@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "374466529990-b42dgqobp5gdcqc6dsc0i337ofvlooeo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gsmp.gsmp",
+            "certificate_hash": "62236f7a50d2feb8a3bd24da620d19ea25397b57"
+          }
+        },
+        {
           "client_id": "374466529990-6endj6i26pg8kjephjac5k9geu4s242g.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,20 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374466529990-6endj6i26pg8kjephjac5k9geu4s242g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "374466529990-d0rmduire0e683gmvvvbb95monnshen8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gsmp.gsmp"
+              }
+            }
+          ]
         },
         "ads_service": {
           "status": 2

@@ -24,13 +24,20 @@
     "preset": "react-native"
   },
   "dependencies": {
+    "adm-zip": "^0.4.11",
+    "fastfall": "^1.5.1",
+    "got": "^9.3.2",
     "native-base": "^2.8.1",
+    "plist": "^3.0.1",
+    "progress": "^2.0.1",
     "react": "16.5.0",
     "react-native": "0.57.1",
+    "react-native-fbsdk": "^0.7.0",
     "react-native-firebase": "^5.1.0",
     "react-navigation": "^2.18.2",
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "xcode": "^1.0.0"
   }
 }
