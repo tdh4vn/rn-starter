@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "374466529990",
+    "firebase_url": "https://gsmp-671d9.firebaseio.com",
+    "project_id": "gsmp-671d9",
+    "storage_bucket": "gsmp-671d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374466529990:android:f5bb88036c7f4143",
+        "android_client_info": {
+          "package_name": "com.gsmp.gsmp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374466529990-6endj6i26pg8kjephjac5k9geu4s242g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAIRJlz7Y_BG636DFVf3X9VhX8IDO2Rl4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
