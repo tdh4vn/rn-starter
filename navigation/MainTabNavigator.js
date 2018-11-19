@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/home-studient/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -12,7 +12,7 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: 'Câu hỏi',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -30,7 +30,7 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+  tabBarLabel: 'Thông báo',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

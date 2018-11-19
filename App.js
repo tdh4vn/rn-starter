@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Root } from 'react-native';
 import { Provider, connect } from 'react-redux';
 import AppNavigator from './navigation/AppNavigator';
 import store from './store'
@@ -22,12 +22,14 @@ export default class App extends React.Component {
 
   render() {
     return (
+
       <Provider store={store}>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator />
         </View>
       </Provider>
+
     );
   }
 }

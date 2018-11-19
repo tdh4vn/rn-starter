@@ -1,10 +1,10 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Actions from '../../actions'
 
-@connect(({ checkLoginState }) => ({ checkLoginState }), dispatch => (bindActionCreators(Actions, dispatch)))
+@connect(({ app }) => ({ checkLoginState: app.checkLoginState }), dispatch => (bindActionCreators(Actions, dispatch)))
 export default class SplashScreen extends React.Component {
 
   static navigationOptions = {
@@ -13,9 +13,9 @@ export default class SplashScreen extends React.Component {
 
   componentDidUpdate() {
     const { checkLoginState, navigation } = this.props;
-    if (checkLoginState == 2) {
+    if (checkLoginState == 3) {
       navigation.navigate('Auth')
-    } else if (checkLoginState == 3) {
+    } else if (checkLoginState == 2) {
       navigation.navigate('Main')
     }
   }
@@ -28,6 +28,7 @@ export default class SplashScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Gia Sư Minh Phương</Text>
+        <ActivityIndicator size="small" color="#00ff00" />
       </View>
     );
   }
@@ -36,6 +37,7 @@ export default class SplashScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row',
     paddingTop: 15,
     backgroundColor: '#fff',
     justifyContent: 'center',
