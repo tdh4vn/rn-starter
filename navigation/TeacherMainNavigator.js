@@ -3,16 +3,15 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/home-studient/HomeScreen';
+import HomeTeacherScreen from '../screens/home-teacher/HomeScreenForTeacher';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import Threads from '../screens/threads/Threads';
-
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+import ThreadsScreen from '../screens/threads/Threads';
+const HomeTeacherStack = createStackNavigator({
+  Home: HomeTeacherScreen,
 });
 
-HomeStack.navigationOptions = {
+HomeTeacherStack.navigationOptions = {
   tabBarLabel: 'Câu hỏi',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -27,7 +26,7 @@ HomeStack.navigationOptions = {
 };
 
 const ThreadsStack = createStackNavigator({
-  Threads: Threads,
+  Threads: ThreadsScreen,
 })
 
 ThreadsStack.navigationOptions = {
@@ -73,7 +72,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
+  HomeTeacherStack,
   ThreadsStack,
   LinksStack,
   SettingsStack,

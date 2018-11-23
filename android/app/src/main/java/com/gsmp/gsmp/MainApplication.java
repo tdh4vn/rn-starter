@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.imagepicker.ImagePickerPackage;
+import com.facebook.reactnative.androidsdk.BuildConfig;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -58,7 +58,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.asList(
         new MainReactPackage(),
-            new ImagePickerPackage(),
             new VectorIconsPackage(),
             new PickerPackage(),
             new FBSDKPackage(mCallbackManager),

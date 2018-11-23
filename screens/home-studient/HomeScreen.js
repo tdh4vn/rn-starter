@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import {
-  Container, Left, Right, Header, Title, Body, Button, Fab, Segment, Content, Icon, Text, List, ListItem
+  Container, Left, Right, Header, Title, Body, Button, Fab, Segment, Spinner, Icon, Text, List, ListItem
 } from 'native-base';
 
 import PlatformIcon from '../../components/PlatformIcon';
@@ -25,7 +24,8 @@ import Actions from '../../actions';
 @connect(({ app, question }) => ({
   token: app.token,
   profile: app.token,
-  questions: question.questions
+  questions: question.questions,
+  getQuestionState: question.getQuestionState
 }), dispatch => (bindActionCreators(Actions, dispatch)))
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -51,11 +51,17 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getQuestions();
+    const { currentQuestionTypeView } = this.state;
+    this.props.getQuestions(currentQuestionTypeView + 9);
   }
 
+  componentWillReceiveProps() {
+
+  }
 
   _handleSegmentTypeQuestionPress = (type) => {
+    this.props.getQuestions(type + 9);//10 tat ca, 11 chua tl, 12 da tra loi
+
     this.setState({
       currentQuestionTypeView: type,
     })
@@ -71,10 +77,31 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.dispatch(pushAction)
   }
 
+  _onOpenAnswer = (question) => {
+
+    var pushAction = null
+    if (question.type == 'Chatbox') {
+      pushAction = StackActions.push({
+        routeName: 'ChatBox',
+        params: {
+          question
+        },
+      });
+    } else {
+      pushAction = StackActions.push({
+        routeName: 'ShowAnswer',
+        params: {
+          question
+        },
+      });
+    }
+    this.props.navigation.dispatch(pushAction)
+  }
+
 
   render() {
     const { currentQuestionTypeView } = this.state;
-    const { questions } = this.props;
+    const { questions, getQuestionState } = this.props;
     return (
       <Container>
         <Segment>
@@ -97,14 +124,17 @@ export default class HomeScreen extends React.Component {
           </Button>
         </Segment>
         <View style={{ flex: 1 }}>
-          <List
+          {getQuestionState == 2 && <List
             dataArray={questions}
             renderRow={(question) =>
               <ListItem noIndent style={{ flex: 0, width: '100%' }}>
-                <CardQuestion question={question} />
+                <CardQuestion
+                  onOpenAnswer={this._onOpenAnswer}
+                  question={question} />
               </ListItem>
             }>
-          </List>
+          </List>}
+          {getQuestionState == 1 && <Spinner />}
           <Fab
             active={true}
             direction="up"

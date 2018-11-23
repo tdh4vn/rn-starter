@@ -39,7 +39,6 @@ export default class CreateContentQuestion extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     this.props.getLevels()
     this.props.getSubjects()
   }
@@ -53,14 +52,6 @@ export default class CreateContentQuestion extends React.Component {
       this.setState({
         image: { uri: image.path, width: image.width, height: image.height, mime: image.mime },
       })
-      // try {
-
-      //   const downloadURL = await uploadFile("hihhi", image)
-      //   console.log(downloadURL)
-
-      // } catch (e) {
-      //   console.log(e)
-      // }
     });
   }
 
@@ -179,8 +170,7 @@ export default class CreateContentQuestion extends React.Component {
                 >
                   {
                     levels.map((item) => {
-                      console.log(item)
-                      return <Picker.Item label={item.name} value={item._id} />
+                      return <Picker.Item label={item.name.toString()} value={item._id} />
                     })
                   }
                 </Picker>}

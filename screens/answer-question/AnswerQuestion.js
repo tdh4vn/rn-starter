@@ -18,17 +18,13 @@ import {
   Text,
   Form,
   Item,
-  Picker,
-  List,
-  ListItem,
-  Thumbnail,
   ActionSheet
 } from 'native-base';
-
+import ImagePicker from 'react-native-image-crop-picker';
 import PlatformIcon from '../../components/PlatformIcon';
 
 import { StackActions } from 'react-navigation';
-
+import QuestionRepository from '../../repository/QuestionRepository';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Actions from '../../actions';
@@ -44,9 +40,9 @@ const answerTypes = ['Only answer', 'Detail answer', 'Chatbox'];
   addQuestionState: question.addQuestionState,
   messageQuestion: question.message
 }), dispatch => (bindActionCreators(Actions, dispatch)))
-export default class ChooseTeacher extends React.Component {
+export default class AnswerQuestion extends React.Component {
   static navigationOptions = {
-    title: "Chọn gia sư",
+    title: "Trả lời câu hỏi",
     header: null,
   };
 
@@ -55,7 +51,9 @@ export default class ChooseTeacher extends React.Component {
     this.teacher = null
     this.state = {
       showAlert: false,
-      answerType: 0
+      answerType: 0,
+      image: null,
+      detailValidate: undefined
     }
   }
 
@@ -72,7 +70,14 @@ export default class ChooseTeacher extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getTeachers()
+
+    this.props.navigation.addListener(
+      'willFocus',
+      payload => {
+        console.debug('willFocus', payload);
+        this.props.getTeachers()
+      }
+    );
   }
 
   showTypePickerActionSheet = () => {
@@ -84,42 +89,52 @@ export default class ChooseTeacher extends React.Component {
       },
       buttonIndex => {
         if (buttonIndex != 3) {
-          this.createQuestion(buttonIndex)
+          this.createQuestion()
         }
       }
     )
   }
 
-  createQuestion = async (answerType) => {
-    const { navigation } = this.props;
+  createAnswer = async () => {
     this.showAlert();
-    const image = navigation.getParam('image', null)
     try {
-      let imageURL = ""
+      const { detail, image } = this.state;
+      const { navigation } = this.props;
+      const question = this.props.navigation.getParam("question", null);
+      if (question == null) throw new Error("Không tìm thấy câu hỏi");
       if (image) {
-        imageURL = await uploadFile(new Date().getTime().toString(), image);
+        const imageURL = await uploadFile(new Date().getTime().toString(), image);
+        const answer = {
+          answer: detail,
+          images: [imageURL]
+        }
+        const result = QuestionRepository.getInstance().answerQuestion(question._id, answer);
+        console.log(result)
+      } else {
+        const answer = {
+          answer: detail,
+        }
+        const result = QuestionRepository.getInstance().answerQuestion(question._id, answer);
       }
-      const question = navigation.getParam('detail', "")
-      const type = answerTypes[answerType]
-      const level_id = navigation.getParam('level', null)
-      const subject_id = navigation.getParam('subject', null)
-      const teacher = this.teacher._id
-      this.props.createQuestion({
-        images: [imageURL],
-        question,
-        type,
-        level_id,
-        subject_id,
-        teacher
-      })
-    } catch (e) {
-      this.hideAlert()
+
       Toast.show({
-        text: e.toString(),
-        duration: 1000,
+        text: "Gửi câu trả lời thành công",
+        duration: 2000,
         type: "danger"
       })
+
+
+      navigation.dismiss()
+
+    } catch (e) {
+      Toast.show({
+        text: e.tostring(),
+        duration: 2000,
+        type: "danger"
+      })
+      this.hideAlert();
     }
+
   }
 
   onDetailChange(value) {
@@ -132,6 +147,22 @@ export default class ChooseTeacher extends React.Component {
       this.setState({
         detail: value,
         detailValidate: false
+      })
+    }
+  }
+
+  onValidateData() {
+    const { detailValidate } = this.state
+    if (detailValidate) {
+      this.createAnswer()
+    } else {
+      Toast.show({
+        text: "Vui lòng hoàn thành đủ thông tin",
+        duration: 2000,
+        type: "danger"
+      })
+      this.setState({
+        detailValidate: detailValidate === undefined ? false : detailValidate,
       })
     }
   }
@@ -163,6 +194,18 @@ export default class ChooseTeacher extends React.Component {
     }
   }
 
+  openImagePicker = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(async (image) => {
+      this.setState({
+        image: { uri: image.path, width: image.width, height: image.height, mime: image.mime },
+      })
+    });
+  }
+
   componentDidUpdate() {
 
   }
@@ -181,8 +224,8 @@ export default class ChooseTeacher extends React.Component {
   }
 
   render() {
-    const { teachers, state, message } = this.props;
     const { showAlert } = this.state;
+    const { image, detail, detailValidate } = this.state;
     return (
       <Root>
         <Container>
@@ -193,36 +236,34 @@ export default class ChooseTeacher extends React.Component {
               </Button>
             </Left>
             <Body>
-              <Title>{ChooseTeacher.navigationOptions.title}</Title>
+              <Title>{AnswerQuestion.navigationOptions.title}</Title>
             </Body>
-            <Right />
+            <Right>
+              <Button transparent onPress={() => { this.onValidateData() }}>
+                <Text>Trả lời</Text>
+              </Button>
+            </Right>
           </Header>
           <Content>
-            {state == 2 && <List
-              dataArray={teachers}
-              renderRow={(teacher) =>
-                <ListItem thumbnail>
-                  <Left>
-                    <Thumbnail source={{ uri: teacher.avatar }} />
-                  </Left>
-                  <Body>
-                    <Text>{teacher.name}</Text>
-                    <Text note numberOfLines={1}>*****</Text>
-                  </Body>
-                  <Right>
-                    <Button transparent onPress={() => { this.onSelectTeacher(teacher) }}>
-                      <Text>Chọn</Text>
-                    </Button>
-                  </Right>
-                </ListItem>
-              }>
-            </List>}
-            {state == 3 && <Text>{message}</Text>}
+            <Form>
+              <Text style={{ marginTop: 8, marginBottom: 8, marginLeft: 8 }}>Hình ảnh</Text>
+              <TouchableOpacity
+                onPress={this.openImagePicker}>
+                <Image
+                  style={{ width: '100%', height: 200 }}
+                  source={image != null ? image : require('../../assets/images/no-image-box.png')} />
+              </TouchableOpacity>
+
+              <Item floatingLabel error={detailValidate === false} success={detailValidate === true}>
+                <Label>Mô tả</Label>
+                <Input multiline={true} onChangeText={this.onDetailChange.bind(this)} value={detail} />
+              </Item>
+            </Form>
           </Content>
           <AwesomeAlert
             show={showAlert}
             showProgress={true}
-            title="Đang gửi câu hỏi"
+            title="Đang gửi câu trả lời"
             closeOnTouchOutside={false}
             closeOnHardwareBackPress={false}
             showCancelButton={false}

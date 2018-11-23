@@ -4,18 +4,33 @@ import actions from "../actions"
 let questionState = {
   levels: [],
   subjects: [],
+
   questions: [],
+
+  requestQuestion: null,
+  onNewRequest: false,
+
   getLevelState: 0,
   getSubjectState: 0,
   addQuestionState: 0,
   getQuestionState: 0,
   getQuestionMessage: "",
   question: null,
-  message: ""
+  message: "",
+  renderFlag: false,
 };
 
 const questionReducer = (state = questionState, action) => {
+  console.log(action.type)
   switch (action.type) {
+    case actions.ON_NEW_QUESTION: {
+      state = Object.assign({}, state, { onNewRequest: true, requestQuestion: action.question })
+      return state;
+    }
+    case actions.CANCEL_NEW_QUESTION: {
+      state = Object.assign({}, state, { onNewRequest: false, requestQuestion: null })
+      return state;
+    }
     case actions.GET_QUESTIONS:
       if (action.state == 1) {
         state = Object.assign({}, state, { getQuestionState: action.state, getQuestionMessage: "Đang lấy dữ liệu" })
@@ -28,6 +43,10 @@ const questionReducer = (state = questionState, action) => {
         state = Object.assign({}, state, {
           getQuestionState: action.state,
           getQuestionMessage: action.message
+        })
+      } else if (action.state == 0) {
+        state = Object.assign({}, state, {
+          getQuestionState: action.state,
         })
       }
       return state;
@@ -73,6 +92,11 @@ const questionReducer = (state = questionState, action) => {
         state = Object.assign({}, state, {
           addQuestionState: action.state,
           message: action.message
+        })
+      } else if (action.state == 0) {
+        state = Object.assign({}, state, {
+          addQuestionState: 0,
+          message: ""
         })
       }
       return state;

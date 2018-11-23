@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Actions from '../../actions'
 
-@connect(({ app }) => ({ checkLoginState: app.checkLoginState }), dispatch => (bindActionCreators(Actions, dispatch)))
+@connect(({ app }) => ({ checkLoginState: app.checkLoginState, profile: app.profile }), dispatch => (bindActionCreators(Actions, dispatch)))
 export default class SplashScreen extends React.Component {
 
   static navigationOptions = {
@@ -12,11 +12,15 @@ export default class SplashScreen extends React.Component {
   };
 
   componentDidUpdate() {
-    const { checkLoginState, navigation } = this.props;
+    const { checkLoginState, navigation, profile } = this.props;
     if (checkLoginState == 3) {
       navigation.navigate('Auth')
     } else if (checkLoginState == 2) {
-      navigation.navigate('Main')
+      if (profile.isStaff) {
+        navigation.navigate('MainTeacher')
+      } else {
+        navigation.navigate('Main')
+      }
     }
   }
 

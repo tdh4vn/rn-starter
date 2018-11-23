@@ -19,7 +19,7 @@ export default class TeacherRepository {
     if (this._teachers != null) return this._teachers;
     try {
       const token = await UserRepository.getInstance().getToken();
-      const response = await axios.get(`${Config.API_URL}/user/users?token=${token}`)
+      const response = await axios.get(`${Config.API_URL}/user/users?token=${token}&typeUser=teacher`)
       if (!response.data.success) {
         throw (new Error(response.data.message))
       } else {

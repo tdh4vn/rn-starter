@@ -10,7 +10,7 @@ import Actions from '../../actions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-@connect(({ app }) => ({ loginState: app.loginState, message: app.message }), dispatch => (bindActionCreators(Actions, dispatch)))
+@connect(({ app }) => ({ loginState: app.loginState, message: app.message, profile: app.profile }), dispatch => (bindActionCreators(Actions, dispatch)))
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     title: 'Đăng nhập',
@@ -25,10 +25,14 @@ export default class LoginScreen extends React.Component {
   }
 
   componentDidUpdate() {
-    const { loginState, navigation, message } = this.props;
+    const { loginState, navigation, message, profile } = this.props;
 
     if (loginState == 2) {
-      navigation.navigate('Main')
+      if (profile.type == "teacher") {
+        navigation.navigate('MainTeacher')
+      } else {
+        navigation.navigate('Main')
+      }
     } else if (loginState == 3) {
       Toast.show({
         text: message,

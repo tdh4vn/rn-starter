@@ -9,7 +9,41 @@ export const GET_LEVELS = 'GET_LEVELS';
 export const GET_TEACHERS = 'GET_TEACHERS';
 export const CREATE_QUESTION = 'CREATE_QUESTION';
 export const GET_QUESTIONS = 'GET_QUESTIONS';
+export const ON_NEW_QUESTION = 'ON_NEW_QUESTION';
+export const CANCEL_NEW_QUESTION = 'CANCEL_NEW_QUESTION';
+import io from 'socket.io-client';
 
+export function listenQuestionSocket() {
+  console.log("listenQuestionSocket")
+  socket = io("http://206.189.127.203:8181");
+  console.log(socket.connect());
+  return async (dispatch) => {
+    try {
+      const token = await UserRepository.getInstance().getToken();
+      socket.on('connect', () => {
+        console.log("socket connected")
+        socket.emit('user:login', token)
+        socket.on('noti:asking', (question) => {
+          console.log(question)
+          dispatch({
+            type: ON_NEW_QUESTION,
+            question,
+          })
+        })
+      })
+    } catch (e) {
+
+    }
+  }
+}
+export function cancelNewQuestion(questionId) {
+  return async (dispatch) => {
+    dispatch({
+      type: CANCEL_NEW_QUESTION
+    })
+    await QuestionRepository.getInstance().cancelGetQuestion(questionId);
+  }
+}
 export function createQuestion(question) {
   return async (dispatch) => {
     dispatch({
@@ -23,24 +57,37 @@ export function createQuestion(question) {
         state: 2,
         question: result
       })
+      setTimeout(() => {
+        dispatch({
+          type: CREATE_QUESTION,
+          state: 0
+        })
+      }, 500)
     } catch (e) {
       dispatch({
         type: CREATE_QUESTION,
         state: 3,
         message: e.toString()
       })
+      setTimeout(() => {
+        dispatch({
+          type: CREATE_QUESTION,
+          state: 0
+        })
+      }, 500)
     }
   }
 }
 
-export function getQuestions() {
+export function getQuestions(status) {
   return async (dispatch) => {
     dispatch({
       type: GET_QUESTIONS,
       state: 1
     })
     try {
-      const questions = await QuestionRepository.getInstance().getQuestions();
+      console.log(status)
+      const questions = await QuestionRepository.getInstance().getQuestions(status);
       console.log(questions)
       dispatch({
         type: GET_QUESTIONS,
